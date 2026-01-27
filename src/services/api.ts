@@ -6,7 +6,7 @@ import axios from "axios";
 */
 
 const api = axios.create({
-    baseURL: 'https://www.omdapi.com/',
+    baseURL: 'https://www.omdbapi.com/',
     timeout: 10000, // 10 seconds timeout
 });
 
@@ -17,7 +17,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
 
-    const apiKey = import.meta.env.Vite_OMBD_API_KEY;
+    const apiKey = import.meta.env.VITE_OMDB_API_KEY;
 
     if(!apiKey) {
         console.log('API key is missing! check your .env.local file.');
