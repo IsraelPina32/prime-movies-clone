@@ -3,7 +3,7 @@ import { movieService } from "../services/movieService";
 import type { Movie } from "../types/movie";
 
 /**
- * Hook to manage movie search state and logic.
+ * Hook to manage movie search state, loading indicators, and API integration.
  */
 
 export const useMovies = () => {
