@@ -1,12 +1,10 @@
 import {  useEffect, useState } from "react";
 import { useMovies } from "./hooks/useMovies";
 import { useDebounce } from "./hooks/useDebounce";
-import { MovieSkeleton } from "./components/movies/MovieSkeleton";
-
+import { MovieGridSkeleton } from "./components/movies/MovieGridSkeleton";
 function App() {
    const [searchTerm,  setSearchTerm] = useState('Batman');
    const { movies, loading, error, searchMovies } = useMovies();
-
    const debouncedTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {
@@ -15,7 +13,6 @@ function App() {
      }
   }, [debouncedTerm]);
 
-  if(loading) return  <h1> Carregando filmes... (Verifique o Console)</h1>
 
   return (
     
@@ -47,18 +44,13 @@ function App() {
 
 
       <main className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 p-3 pt-4">
-        {loading && <p className="col-span-full text-center animate-pulse">Carregando catálogo...</p>}
-        {loading && Array.from({ length: 10 }).map((_, index) => (
-    <MovieSkeleton key={`skeleton-${index}`} />
-  ))}
-
-  {error && !loading && (
-    <div className="col-span-full flex flex-col items-center justify-center py-20 text-gray-400">
-        <p className="text-xl font-medium mb-2 text-red-700">Nenhum resultado encontrado</p>
-        <span className="text-sm opacity-60">Tente buscar por outro título</span>
-    </div>
-      )}
-        {movies.map(movie => (
+        <MovieGridSkeleton isLoading={!!loading} count={16} />
+       {!loading && error && searchTerm && (
+    <p className="col-span-full text-center text-red-500 font-bold p-3">
+      {error}
+    </p>
+        )}
+        {!loading && movies.map(movie => (
         <article key={movie.imdbID} className="relative group bg-[#1a242f] rounded-lg overflow-hidden isolate transition-all duration-300 hover:scale-105 shadow-2xl transform-gpu">
           <div className="aspect-[2/3] w-full overflow-hidden">
             <img src={movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x450?text=Sem+Poster'} 
