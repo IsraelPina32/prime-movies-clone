@@ -2,6 +2,8 @@ import {  useEffect, useState } from "react";
 import { useMovies } from "./hooks/useMovies";
 import { useDebounce } from "./hooks/useDebounce";
 import { MovieGridSkeleton } from "./components/movies/MovieGridSkeleton";
+import { ErrorState } from "./components/ui/ErrorState";
+import { MovieCard } from "./components/movies/MovieCard";
 function App() {
    const [searchTerm,  setSearchTerm] = useState('Batman');
    const { movies, loading, error, searchMovies } = useMovies();
@@ -13,14 +15,12 @@ function App() {
      }
   }, [debouncedTerm]);
 
-
   return (
     
     <div className="min-h-screen bg-prime-bg text-white p-8">
       <header className="w-full bg-[#1a242f]/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50 rounded-lg mb-6 shadow-2xl">
           <div className="max-w-[1440px] mx-auto flex items-center justify-between flex-col min-[426px]:flex-row gap-4 min-[426px]:gap-0 px-10 py-4">
           <h1 className="text-[20px] font-extrabold text-slate-100 tracking-tight cursor-pointer">Prime Video Search</h1>
-
       <input  
         type="text" 
         placeholder="Pesquisar..."
@@ -42,30 +42,14 @@ function App() {
         </div>
       </header>
 
-
       <main className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 p-3 pt-4">
         <MovieGridSkeleton isLoading={!!loading} count={16} />
        {!loading && error && searchTerm && (
-    <p className="col-span-full text-center text-red-500 font-bold p-3">
-      {error}
-    </p>
+         <ErrorState message={error} onRetry={() => searchMovies(searchTerm)}/>
         )}
-        {!loading && movies.map(movie => (
-        <article key={movie.imdbID} className="relative group bg-[#1a242f] rounded-lg overflow-hidden isolate transition-all duration-300 hover:scale-105 shadow-2xl transform-gpu">
-          <div className="aspect-[2/3] w-full overflow-hidden">
-            <img src={movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x450?text=Sem+Poster'} 
-              alt={movie.Title} 
-              className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110"/>
-          </div>
-            <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-transparent to-black/90 pointer-events-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0f171e] via-transparent to-transparent 
-                      opacity-100 group-hover:opacity-80 transition-opacity duration-500 pointer-events-none"/>
-          <div className="absolute bottom-0 left-0 right-0 p-3 text-center z-10 pointer-events-none">
-              <h3 className="text-[10px] md:text-xs text-gray-100 font-bold truncate leading-tight line-clamp-2 drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]">{movie.Title}</h3>
-              <p className="text-[10px] text-xs font-black text-prime-blue mt-1 tracking-wide uppercase">{movie.Year}</p>
-          </div>
-        </article>
-        ))}
+        {!loading && !error && movies.map((movie => (
+          <MovieCard  key={movie.imdbID} movie={movie} />
+        )))}
       </main>
     </div>
   );
