@@ -6,10 +6,12 @@ import type { Movie } from "../types/movie";
  * Hook to manage movie search state, loading indicators, and API integration.
  */
 
+
 export const useMovies = () => {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [loading, setLoading] = useState<Boolean>(false);
     const [error, setError] = useState< string | null>(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     const searchMovies = useCallback( async (query: string) => {
         if(!query.trim()) {
@@ -36,5 +38,5 @@ export const useMovies = () => {
             setLoading(false);
         }
     }, []);
-    return { movies, loading, error, searchMovies}
+    return { searchTerm, setSearchTerm, movies, loading, error, searchMovies}
 };
