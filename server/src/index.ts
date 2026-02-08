@@ -3,6 +3,8 @@ import express from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import 'dotenv/config';
+import { error } from 'node:console';
+
 
 dotenv.config();
 
@@ -37,7 +39,30 @@ app.get('/api/movies', async (req, res) => {
         };
      });
 
-     app.listen(PORT, () => {
+app.get('/api/movies/:id', async(req, res) => {
+    const { id } = req.params;
+    const apiKey = process.env.OMDB_API_KEY;
+
+    try {
+        const response = await axios.get('https://www.omdbapi.com/', {
+            params: {
+                i: id,
+                plot: 'full',
+                apikey: apiKey,
+            },
+        });
+    if(response.data.Response === "False") {
+        return res.status(404).json({error: "Movie not found"});
+      }
+      res.json(response.data);
+    } catch (error) {
+        console.error("Error fetching movie details from OMDB API.", error);
+        res.status(500).json({error: "Error fetching movie details from OMDB API."});
+    }
+});
+
+app.listen(PORT, () => {
         console.log(`Server is running on http://localhost:${PORT}`);
-        console.log(` Endpoint de busca: http://localhost:${PORT}/api/movies`);
+        console.log(`Endpoint de search: http://localhost:${PORT}/api/movies`);
+        console.log(`Details: http://localhost:${PORT}/api/movies/ID_AQUI`);
 });
