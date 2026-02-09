@@ -1,13 +1,7 @@
 import  { createContext, useContext, useState, type ReactNode, useEffect, useMemo } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { movieService } from "../services/movieService";
-
-interface Movie {
-  imdbID: string;
-  Title: string;
-  Year: string;
-  Poster: string;
-}
+import { Movie } from "../types/movie";
 
 interface MovieContextData {
   searchTerm: string;
@@ -21,8 +15,10 @@ interface MovieContextData {
 const MovieContext = createContext<MovieContextData>({} as MovieContextData);
 
 export const MovieProvider = ({ children }: { children: ReactNode }) => {
+
   const [searchTerm, setSearchTerm] = useState(() => {
-     return localStorage.getItem('@PrimeSearch:searchTerm') || '';
+  return localStorage.getItem('@PrimeSearch:searchTerm') || '';
+
   });
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -40,10 +36,18 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const data = await movieService.searchMovies(query);
-      setMovies(data);
-
+     
       if (data && data.length > 0) {
-        setMovies(data);
+        const mappeMovies: Movie[] = data.map((m: any) => ({
+          id: m.imdbID || m.id,
+          imdbID: m.imdbID,
+          Title: m.Title,
+          Year: m.Year,
+          Type: m.Type || 'movie',
+          Poster: m.Poster === 'N/A' ? null : m.Poster
+        }));
+        setMovies(mappeMovies)
+
       } else {
         setMovies([]);
         setError(" Unknown result from movie service.");
