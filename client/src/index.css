@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: radial-gradient(circle at center, #1f2d3d 0%, #0f171e 100%);
+  background-attachment: fixed; /* Mantém o gradiente parado ao scrollar */
+  min-height: 100vh;
+  margin: 0;
+}
