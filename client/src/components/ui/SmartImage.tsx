@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MovieSkeleton } from './MovieSkeleton';
+import { MovieSkeleton } from '../movies/MovieSkeleton';
 
 interface SmartImageProps {
   src: string;
