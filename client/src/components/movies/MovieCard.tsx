@@ -1,7 +1,6 @@
 import { SmartImage } from '../ui/SmartImage';
 import { Movie } from '../../types/movie';
 import { Link } from 'react-router-dom';
-import { getSecurePoster } from '../../utils/sanitizer';
 
 interface MovieCardProps {
   movie: Movie;
