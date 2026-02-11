@@ -19,8 +19,11 @@ export interface MovieDetail extends Movie {
     Plot: string;
     Genre: string;
     Director: string;
+    Writer: string;
     Actors: string;
-    imdRating: string;
+    imdbRating: string;
     Runtime: string;
     Released: string;
+    Type: string;
+    TotalSeasons?: string;
 }
