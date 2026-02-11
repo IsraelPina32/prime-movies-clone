@@ -1,5 +1,5 @@
 import { SmartImage } from '../ui/SmartImage';
-import { Movie } from '../../types/movie';
+import type { Movie } from '../../types/movie';
 import { Link } from 'react-router-dom';
 
 interface MovieCardProps {

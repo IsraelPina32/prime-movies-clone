@@ -1,7 +1,7 @@
 import  { createContext, useContext, useState, type ReactNode, useEffect, useMemo } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { movieService } from "../services/movieService";
-import { Movie } from "../types/movie";
+import type { Movie } from "../types/movie";
 
 interface MovieContextData {
   searchTerm: string;

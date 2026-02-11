@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { SmartImage } from "../components/ui/SmartImage";
 import { formatRuntime } from "../utils/formatters";
 import { movieService } from "../services/movieService";
-import { MovieDetail } from "../types/movie";
+import type { MovieDetail } from "../types/movie";
 
 export const MovieDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
