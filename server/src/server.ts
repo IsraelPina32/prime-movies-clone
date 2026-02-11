@@ -3,7 +3,7 @@ import express from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
 import 'dotenv/config';
-import { error } from 'node:console';
+
 
 
 dotenv.config();
@@ -11,7 +11,11 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: ['https://prime-movies-clone.vercel.app',
+            "http://localhost:5173"
+    ],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    credentials: true,
 }));
 
 const PORT = process.env.PORT || 3001;
