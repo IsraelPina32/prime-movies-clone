@@ -2,9 +2,6 @@ import cors from 'cors';
 import express from 'express';
 import axios from 'axios';
 import dotenv from 'dotenv';
-import 'dotenv/config';
-
-
 
 dotenv.config();
 
@@ -18,7 +15,6 @@ app.use(cors({
     credentials: true,
 }));
 
-const PORT = process.env.PORT || 3001;
 const OMDB_API_KEY = process.env.OMDB_API_KEY;
 
 app.get('/api/movies', async (req, res) => {
@@ -65,8 +61,11 @@ app.get('/api/movies/:id', async(req, res) => {
     }
 });
 
-app.listen(PORT, () => {
-        console.log(`Server is running on http://localhost:${PORT}`);
-        console.log(`Endpoint de search: http://localhost:${PORT}/api/movies`);
-        console.log(`Details: http://localhost:${PORT}/api/movies/ID_AQUI`);
-});
+if(process.env.NODE !== 'production') {
+    const PORT = process.env.PORT || 3001;
+    app.listen(PORT, () => console.log(`Dev server on http://localhost:${PORT}`));
+};
+
+
+
+export default app;
