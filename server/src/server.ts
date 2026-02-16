@@ -61,7 +61,7 @@ app.get('/api/movies', async (req : Request, res: Response) => {
 
             } catch (error) {
                  console.error('Error fetching data from OMDB API.', error);
-                 res.status(500).json({ error: 'Error fetching data from OMDB API.'})
+                 res.status(500).json({ error: 'Error bfetching data from OMDB API.'})
         };
      });
 
@@ -77,12 +77,20 @@ app.get('/api/movies/:id', async(req, res) => {
         return res.status(404).json({error: "Movie not found"});
       }
 
-
       res.json(response.data);
-    } catch (error) {
-        console.error("Error fetching movie details from OMDB API.", error);
-        res.status(500).json({error: "Error fetching movie details from OMDB API."});
-    }
+    } catch (error: unknown) {
+
+        if (error instanceof Error) {
+              console.error(`[OMDB_FETCH_ERROR]: ${error.message}`)
+        res.status(500).json({
+            error: "Error fetching movie details from OMDB API.",
+            message:  "Our service is temporarily unable to connect to the movie provider."
+        });
+        } else {
+            console.error("Error fetching movie details from OMDB API.", error);
+            res.status(500).json({ error: "An unexpected error occurred."})
+        }
+    };
 });
 
 if(process.env.NODE !== 'production') {
