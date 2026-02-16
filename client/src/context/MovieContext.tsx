@@ -1,4 +1,4 @@
-import  { createContext, useContext, useState, type ReactNode, useEffect, useMemo } from "react";
+import  { createContext, useContext, useState, type ReactNode, useEffect, useMemo, useCallback } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { movieService } from "../services/movieService";
 import type { Movie } from "../types/movie";
@@ -8,34 +8,34 @@ interface MovieContextData {
   setSearchTerm: (term: string) => void;
   movies: Movie[];
   loading: boolean;
+  selectedGenre: string;
+  setSelectedGenre: (value: string) => void;
   error: string | null;
-  searchMovies: (query: string) => Promise<void>;
+  searchMovies: (query: string, genre: string) => Promise<void>;
 }
 
 const MovieContext = createContext<MovieContextData>({} as MovieContextData);
 
 export const MovieProvider = ({ children }: { children: ReactNode }) => {
 
-  const [searchTerm, setSearchTerm] = useState(() => {
-  return localStorage.getItem('@PrimeSearch:searchTerm') || '';
+  const [searchTerm, setSearchTerm] = useState(() => localStorage.getItem('@PrimeSearch:searchTerm') || '');
 
-  });
+  const [selectedGenre, setSelectedGenre] = useState('');
   const [movies, setMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const debouncedTerm = useDebounce(searchTerm, 500);
 
-  const searchMovies = async (query: string) => {
+  const fetchMovies = useCallback(async (query: string, genre: string) => {
     if (!query.trim()) {
       setMovies([]);
-      setError(null);
       return;
     }
 
     setLoading(true);
     setError(null);
     try {
-      const data = await movieService.searchMovies(query);
+      const data = await movieService.searchMovies(query, genre);
      
       if (data && data.length > 0) {
         const mappeMovies: Movie[] = data.map((m: any) => ({
@@ -50,26 +50,23 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
 
       } else {
         setMovies([]);
-        setError(" Unknown result from movie service.");
+        setError("Unknown result from movie service.");
       }
     } catch (err) {
       setError("Falha na conexão com o servidor.");
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    if (debouncedTerm) {
-      searchMovies(debouncedTerm);
-    } else {
-      setMovies([]);
-    }
-  }, [debouncedTerm]);
+    fetchMovies(debouncedTerm, selectedGenre);
+    localStorage.setItem('@PrimeSearch:searchTerm', debouncedTerm);
+  }, [debouncedTerm, selectedGenre,fetchMovies]);
 
   const value = useMemo(() => ({
-    searchTerm, setSearchTerm, movies, loading, error, searchMovies
-  }), [searchTerm, setSearchTerm, movies, loading, error, searchMovies]);
+    searchTerm, setSearchTerm, movies, loading, error, searchMovies: fetchMovies, selectedGenre, setSelectedGenre
+  }), [searchTerm, setSearchTerm, movies, loading, error, fetchMovies, setSelectedGenre, selectedGenre]);
 
   return (
     <MovieContext.Provider value={value}>
