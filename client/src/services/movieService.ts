@@ -14,11 +14,11 @@ interface OmdbSearchResponse {
 
 export const movieService = {
 
-    searchMovies: async (title: string, genre: string): Promise<Movie[]> => {
+    searchMovies: async (title: string, genre: string, year: string): Promise<Movie[]> => {
         console.log("Chamando a URL:", api.defaults.baseURL);
         try{
             const response = await api.get<OmdbSearchResponse>('/movies', {
-                    params: { query: title, genre: genre }
+                    params: { query: title, genre: genre, year: year }
                 });
             if (response.data.Response === "False") {
                 console.error('OMDB API Error:', response.data.Error);
