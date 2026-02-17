@@ -1,4 +1,4 @@
-import { useMovieContext } from "../context/MovieContext";
+import { useMovieContext } from "../../../context/MovieContext";
 
 const GENRES = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Triller"];
 
@@ -14,7 +14,7 @@ export const GenreFilter = () => {
                  focus:bg-white/[0.15] focus:border-slate-500/50
                  cursor-pointer backdrop-blur-xl shadow-lg"
         >
-            <option value="" className="bg-[#1a242f]"> Todos os Gẽneros</option>
+            <option value="" className="bg-[#1a242f]"> Todos os Gêneros</option>
             {GENRES.map( genre => (
                 <option key={genre} value={genre} className="bg-[#1a242f] text-white">{genre}</option>
             ))}

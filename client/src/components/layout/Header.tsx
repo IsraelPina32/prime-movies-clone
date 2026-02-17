@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useMovieContext } from '../../context/MovieContext';
+import { FilterBar } from './components/FilterBar';
 
 export const Header =  () => {
   const { searchTerm, setSearchTerm} = useMovieContext();
@@ -12,7 +13,9 @@ export const Header =  () => {
           </h1>
         </Link>
 
+          <FilterBar/>
         <div className="w-full min-[426px]:w-[40%] max-w-[300px] relative">
+          <div className='relative w-full max-w-[300px]'>
           <input
             type="text"
             placeholder="Pesquisar filmes..."
@@ -28,6 +31,7 @@ export const Header =  () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+        </div>
         </div>
       </div>
     </header>
