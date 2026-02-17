@@ -26,8 +26,14 @@ interface OMDBasicMovie {
 }
 
 app.get('/api/movies', async (req : Request, res: Response) => {
-    const  query  = req.query.query as string;
-    const genre  = req.query.genre as string;
+
+    const { query, genre, year} = req.query
+
+    let validYear = undefined;
+
+    if( year && /^\d{4}$/.test( year as string)) {
+        validYear = year as string;
+    }
 
     if(!query) {
         return res.status(400).json({ error: "Query parameter is required"})
@@ -37,6 +43,7 @@ app.get('/api/movies', async (req : Request, res: Response) => {
         const searchResponse = await axios.get('https://www.omdbapi.com/', {
             params: {
                 s: query,
+                y: validYear,
                 apikey: OMDB_API_KEY,
             },    
         });
@@ -46,22 +53,30 @@ app.get('/api/movies', async (req : Request, res: Response) => {
 
             const movies : OMDBasicMovie[] = searchResponse.data.Search;
 
+            const hasGenreFilter = genre && genre !== 'All' && genre !== '';
+
+            if(!hasGenreFilter) return res.json({ Search: movies });
+
             const detailedMovies = await Promise.all(movies.slice(0, 10).map(async (movie: OMDBasicMovie) => {
-                const detail = await axios.get('https://www.omdbapi.com/', {
-                    params: { i: movie.imdbID, apikey: OMDB_API_KEY }
-                });
-                return detail.data
+                try {
+                    const detail = await axios.get('https://www.omdbapi.com/', {
+                        params: { i: movie.imdbID, apikey: OMDB_API_KEY }
+                    });
+                    return detail.data
+                } catch {
+                    return null;
+                }
             })
           );
 
 
-            const filteredResults = genre && genre !== 'All' ? detailedMovies.filter((m: any) => m.Genre && m.Genre.includes(genre as string)) : detailedMovies;
+            const filteredResults = detailedMovies.filter(m => m !== null).filter((m: any) => m.Genre.toLowerCase().includes((genre as string).toLowerCase()));
 
             res.json({ Search: filteredResults });
 
             } catch (error) {
-                 console.error('Error fetching data from OMDB API.', error);
-                 res.status(500).json({ error: 'Error bfetching data from OMDB API.'})
+                 console.error('[BACK_ERROR]', error);
+                 res.status(500).json({ error: 'Internal Server Error'})
         };
      });
 
@@ -69,6 +84,7 @@ app.get('/api/movies/:id', async(req, res) => {
     const { id } = req.params;
 
     try {
+
         const response = await axios.get('https://www.omdbapi.com/', {
             params: { i: id, plot: 'full', apikey: OMDB_API_KEY,}
         });
