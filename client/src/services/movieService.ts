@@ -14,21 +14,18 @@ interface OmdbSearchResponse {
 
 export const movieService = {
 
-    searchMovies: async (title: string, genre: string, year: string): Promise<Movie[]> => {
+    searchMovies: async (title: string, genre: string, year: string, page: number): Promise<OmdbSearchResponse> => {
         console.log("Chamando a URL:", api.defaults.baseURL);
         try{
             const response = await api.get<OmdbSearchResponse>('/movies', {
-                    params: { query: title, genre: genre, year: year }
+                    params: { query: title, genre: genre, year: year, page: page}
                 });
-            if (response.data.Response === "False") {
-                console.error('OMDB API Error:', response.data.Error);
-                return [];
-            } 
+            
+            return response.data;
 
-         return response.data.Search || [];
         } catch (error) {
             console.error('Falied to request the search endpoint:', error);
-            return [];
+            return { Search: [], totalResults: "0", Response: "False", Error: "Error conection"};
         }
     },
 
