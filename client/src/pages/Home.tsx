@@ -11,7 +11,7 @@ export const Home = () => {
         {loading && <MovieGridSkeleton count={10} isLoading/>}
        {!loading && error && (
         <div className="col-span-full py-20">
-          <ErrorState message={error} onRetry={() => searchMovies(searchTerm)}/>
+          <ErrorState message={error} onRetry={() => searchMovies({ query: searchTerm})}/>
         </div>
         )}
         {!loading && !error && (movies || []).map((movie => (
