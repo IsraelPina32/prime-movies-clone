@@ -11,10 +11,12 @@ export const useMovies = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState< string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [totalResults, setTotalResults] = useState<number>(0);
 
-    const searchMovies = useCallback( async (query: string) => {
+    const searchMovies = useCallback( async (query: string  = '', genre: string = '', year: string = '', page: number = 1) => {
         if(!query.trim()) {
             setMovies([]);
+            setTotalResults(0);
             setError(null);
             return;
         };
@@ -22,20 +24,23 @@ export const useMovies = () => {
         try {
             setLoading(true);
             setError(null);
-            const data = await movieService.searchMovies(query);
+            const data = await movieService.searchMovies(query, genre, year, page);
 
-            if (data && data.length > 0) {
-                setMovies(data);
+            if (data && data.Response === "True" && data.Search) {
+                setMovies(data.Search);
+                setTotalResults(Number(data.totalResults) || 0);
             } else {
                 setError(" Unknown result from movie serice");
                 setMovies([]);
+            setTotalResults(0);
             }
         } catch (err) {
             setError('Error in connection to movie service');
             setMovies([]);
+            setTotalResults(0);
         } finally {
             setLoading(false);
         }
     }, []);
-    return { searchTerm, setSearchTerm, movies, loading, error, searchMovies}
+    return { searchTerm, setSearchTerm, movies, loading, error, searchMovies, totalResults}
 };
