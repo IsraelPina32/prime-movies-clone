@@ -27,7 +27,7 @@ interface OMDBasicMovie {
 
 app.get('/api/movies', async (req : Request, res: Response) => {
 
-    const { query, genre, year} = req.query
+    const { query, genre, year, page} = req.query
 
     let validYear = undefined;
 
@@ -44,6 +44,7 @@ app.get('/api/movies', async (req : Request, res: Response) => {
             params: {
                 s: query,
                 y: validYear,
+                page: page || 1,
                 apikey: OMDB_API_KEY,
             },    
         });
@@ -52,10 +53,10 @@ app.get('/api/movies', async (req : Request, res: Response) => {
             }
 
             const movies : OMDBasicMovie[] = searchResponse.data.Search;
-
+            const totalResults = searchResponse.data.totalResults;
             const hasGenreFilter = genre && genre !== 'All' && genre !== '';
 
-            if(!hasGenreFilter) return res.json({ Search: movies });
+            if(!hasGenreFilter) return res.json({ Search: movies, totalResults: totalResults, Response: "True" });
 
             const detailedMovies = await Promise.all(movies.slice(0, 10).map(async (movie: OMDBasicMovie) => {
                 try {
@@ -72,7 +73,7 @@ app.get('/api/movies', async (req : Request, res: Response) => {
 
             const filteredResults = detailedMovies.filter(m => m !== null).filter((m: any) => m.Genre.toLowerCase().includes((genre as string).toLowerCase()));
 
-            res.json({ Search: filteredResults });
+            res.json({ Search: filteredResults, totalResults: hasGenreFilter ? String(filteredResults.length) : totalResults, Response: "True" });
 
             } catch (error) {
                  console.error('[BACK_ERROR]', error);
