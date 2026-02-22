@@ -15,12 +15,13 @@ interface OmdbSearchResponse {
 export const movieService = {
 
     searchMovies: async (title: string, genre: string, year: string, page: number): Promise<OmdbSearchResponse> => {
-        console.log("Chamando a URL:", api.defaults.baseURL);
+
         try{
             const response = await api.get<OmdbSearchResponse>('/movies', {
-                    params: { query: title, genre: genre, year: year, page: page}
+                    params: { query: title, genre: genre || undefined, year: year || undefined, page: page}
                 });
             
+            console.log("RESPOSTA COMPLETA DO SERVIDOR:", response.data);
             return response.data;
 
         } catch (error) {

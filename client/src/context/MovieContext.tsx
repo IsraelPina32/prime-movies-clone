@@ -17,15 +17,14 @@ interface MovieContextData {
   currentPage: number,
   setCurrentPage: (page: number) => void;
   totalResults: number; 
-}
-
+};
 
 interface SearchOptions  {
    query: string, 
    genre?: string, 
    year?: string,
    page?: number;
-}
+};
 
 const MovieContext = createContext<MovieContextData>({} as MovieContextData);
 
@@ -63,13 +62,12 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
           Type: m.Type || 'movie',
           Poster: m.Poster === 'N/A' ? null : m.Poster
         }));
-        setMovies(mappeMovies)
-        setTotalResults(Number(data.totalResults || 10))
+        setMovies(mappeMovies);
+        setTotalResults(Number(data.totalResults));
       } else {
         setMovies([]);
         setTotalResults(0);
-        setError(null);
-        return;
+        if( data && data.Error !== 'Movie not found!') setError(data.Error);
       }
     } catch (err) {
       setError("Falha na conexão com o servidor.");
@@ -80,8 +78,12 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   useEffect(() => {
-    fetchMovies({query: debouncedTerm, genre: selectedGenre !== "" ? selectedGenre : undefined, year: selectedYear !== "" ? selectedYear : undefined, page: currentPage});
-    localStorage.setItem('@PrimeSearch:searchTerm', debouncedTerm);
+    const term = debouncedTerm.trim();
+
+    if(term) {
+       fetchMovies({query: debouncedTerm, genre: selectedGenre !== "" ? selectedGenre : undefined, year: selectedYear !== "" ? selectedYear : undefined, page: currentPage});
+       localStorage.setItem('@PrimeSearch:searchTerm', debouncedTerm);
+    }
   }, [debouncedTerm, selectedGenre, selectedYear, currentPage, fetchMovies]);
 
   useEffect(() => {
