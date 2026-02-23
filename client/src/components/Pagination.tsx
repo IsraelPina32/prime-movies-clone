@@ -7,8 +7,6 @@ interface PaginationProps {
 
 export const Pagination = ({currentPage, onPageChange, totalResults }: PaginationProps) => {
     
-    console.log("DEBUG PAGINAÇÃO", {totalResults, type: typeof totalResults});
-    
     const moviesPerpage = 10;
     const total = Number(totalResults) || 0;
     const totalPages = Math.ceil(total / moviesPerpage) || 1;
