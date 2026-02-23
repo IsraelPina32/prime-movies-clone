@@ -27,7 +27,7 @@ interface OMDBasicMovie {
 
 app.get('/api/movies', async (req : Request, res: Response) => {
 
-    const { query, genre, year, page} = req.query
+    const { query, genre, year, page, type} = req.query
 
     let validYear = undefined;
 
@@ -42,15 +42,16 @@ app.get('/api/movies', async (req : Request, res: Response) => {
     try {
         const searchResponse = await axios.get('https://www.omdbapi.com/', {
             params: {
+                apikey: OMDB_API_KEY,
                 s: query,
                 y: validYear,
                 page: page || 1,
-                apikey: OMDB_API_KEY,
+                type: type || undefined
             },    
         });
             if(searchResponse.data.Response === "False") {
                 return res.json({ Search: [], totalResults: "0"});
-            }
+            };
 
             const movies : OMDBasicMovie[] = searchResponse.data.Search;
             const totalResults = searchResponse.data.totalResults;
@@ -58,7 +59,7 @@ app.get('/api/movies', async (req : Request, res: Response) => {
 
             if(!hasGenreFilter) return res.json({ Search: movies, totalResults: totalResults, Response: "True" });
 
-            const detailedMovies = await Promise.all(movies.slice(0, 10).map(async (movie: OMDBasicMovie) => {
+            const detailedMovies = await Promise.all(movies.map(async (movie: OMDBasicMovie) => {
                 try {
                     const detail = await axios.get('https://www.omdbapi.com/', {
                         params: { i: movie.imdbID, apikey: OMDB_API_KEY }
@@ -71,9 +72,9 @@ app.get('/api/movies', async (req : Request, res: Response) => {
           );
 
 
-            const filteredResults = detailedMovies.filter(m => m !== null).filter((m: any) => m.Genre.toLowerCase().includes((genre as string).toLowerCase()));
+            const filteredResults = detailedMovies.filter((m): m is any => m !== null).filter((m: any) => m.Genre && m.Genre.toLowerCase().includes((genre as string).toLowerCase()));
 
-            res.json({ Search: filteredResults, totalResults: hasGenreFilter ? String(filteredResults.length) : totalResults, Response: "True" });
+            res.json({ Search: filteredResults, totalResults: totalResults, Response: "True" });
 
             } catch (error) {
                  console.error('[BACK_ERROR]', error);
@@ -110,7 +111,7 @@ app.get('/api/movies/:id', async(req, res) => {
     };
 });
 
-if(process.env.NODE !== 'production') {
+if(process.env.NODE_ENV !== 'production') {
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => console.log(`Dev server on http://localhost:${PORT}`));
 };
