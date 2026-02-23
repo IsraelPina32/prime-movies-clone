@@ -1,4 +1,3 @@
-
 export interface Movie {
     readonly id: string,
     readonly imdbID: string;
@@ -6,6 +5,13 @@ export interface Movie {
     Year: string;
     Type: string;
     Poster: string | null;
+};
+
+export type MediaType = 'movie' | 'series' | 'episode' | '';
+
+export interface MovieFilters {
+    type: MediaType;
+    minRating: number;
 };
 
 export interface MovieResponse {
