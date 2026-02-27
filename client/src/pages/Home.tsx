@@ -43,7 +43,15 @@ export const Home = () => {
           </div>
         )}
       </div>
-        <Pagination currentPage={currentPage} totalResults={totalResults} onPageChange={handlePageChange}/>
+      { movies.length > 0 ? (
+                <Pagination 
+                currentPage={currentPage} totalResults={totalResults} onPageChange={handlePageChange}
+                />
+      ): (
+          <div className="text-zinc-500 text-center py-10">
+              Nenhum filme encontrado para os filtros selecionados.
+    </div>
+      )}
     </main>
     );
 };
