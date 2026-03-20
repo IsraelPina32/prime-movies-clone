@@ -5,6 +5,7 @@ export interface Movie {
     Year: string;
     Type: string;
     Poster: string | null;
+    imdbRating?: string;
 };
 
 export type MediaType = 'movie' | 'series' | 'episode' | '';
