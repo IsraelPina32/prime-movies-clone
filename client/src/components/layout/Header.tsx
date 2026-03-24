@@ -1,21 +1,26 @@
 import { Link } from 'react-router-dom';
 import { useMovieContext } from '../../context/MovieContext';
-import { FilterBar } from './components/FilterBar';
+import { useState } from 'react';
+import { FilterSidebar } from './FiltererSidebar';
+import { Menu, Search} from 'lucide-react';
 
 export const Header =  () => {
   const { searchTerm, setSearchTerm} = useMovieContext();
+  const [isFilterBarOpen, setIsFilterBarOpen] = useState(false);
   return (
-    <header className="w-full bg-[#1a242f]/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50 rounded-lg mb-6 shadow-2xl">
-      <div className="max-w-[1440px] mx-auto flex items-center justify-between flex-col min-[426px]:flex-row gap-4 min-[426px]:gap-0 px-10 py-4">
-        <Link to="/" className="hover:opacity-80 transition-opacity">
+    <>
+    <header className="w-full bg-[#1a242f]/90 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50 mb-6 shadow-2xl">
+
+      <div className="max-w-[1440px] mx-auto px-4 lg:px-10 py-4">
+        <div className="flex flex-col lg:flex-row w-full items-center justify-between gap-4">
+
+        <Link to="/" className="hover:opacity-80 transition-opacity shrink-0">
           <h1 className="text-[20px] font-extrabold text-slate-100 tracking-tight cursor-pointer">
-            Prime Video <span className="text-prime-blue">Search</span>
+            Movies Prime <span className="text-prime-blue">Pro</span>
           </h1>
         </Link>
 
-          <FilterBar/>
-        <div className="w-full min-[426px]:w-[40%] max-w-[300px] relative">
-          <div className='relative w-full max-w-[300px]'>
+         <div className="flex-1 max-w-[500px] relative mx-2">
           <input
             type="text"
             placeholder="Pesquisar filmes..."
@@ -31,9 +36,20 @@ export const Header =  () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 w-5 h-5"/>
         </div>
+    
+
+        <button 
+        onClick={() => setIsFilterBarOpen(true)} className="flex items-center gap-2 bg-prime-blue/10 hover:bg-prime-blue/20 text-prime-blue px-4 py-2 rounded-xl border border-prime-blue/20 transition-all font-semibold">
+          <Menu size={18}/>
+          <span className='hidden sm:inline'>Filtros</span>
+          </button>
         </div>
       </div>
-    </header>
-  );
+   </header>
+      <FilterSidebar isOpen={isFilterBarOpen} onClose={() => setIsFilterBarOpen(false)}/>
+    </>
+    
+   );
 };
