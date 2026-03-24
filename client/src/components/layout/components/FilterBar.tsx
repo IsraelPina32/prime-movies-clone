@@ -3,9 +3,9 @@ import { RatingFilter } from "./RatingFilter"
 import TypeFilter  from "./TypeFilter"
 import { YearFilter } from "./YearFilter"
 
-export const FilterBar = () => {
+export const FilterBar = ({ isSidebar }: {isSidebar?: boolean}) => {
     return (
-        <div className="flex items-end gap-6 p-5 bg-black/20 backdrop-blur-sm rounded-xl h-24">
+        <div className={`flex ${isSidebar ? "flex-col gap-8": 'flex-row gap-4'}`}>
             <YearFilter/>
             <TypeFilter/>
             <GenreFilter/>
