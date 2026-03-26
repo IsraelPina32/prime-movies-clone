@@ -73,7 +73,3 @@ npm run dev
 [!IMPORTANT] I/O Management: Disk write operations (localStorage) are synchronized via custom hooks, ensuring that the React lifecycle is never blocked by heavy synchronous tasks.
 
 [!TIP] Scalability Path: The movieService acts as an adapter. To scale to a fullstack environment, simply swap the fetch implementation within the service layer; the UI components will remain untouched due to strict interface contracts.
-
-## 🛡️ System Status (Saeko Mode)
-
-This project follows the path of technical discipline. Every component has been polished to be predictable, testable, and lightning-fast.
