@@ -27,7 +27,7 @@ export const TrailerSection = ({ movieTitle, year }: TrailerSectionProps) => {
     getTrailer();
   }, [movieTitle, year]);
 
-  if (!trailerUrl) return null; // Não exibe nada se não achar trailer
+  if (!trailerUrl) return null; 
 
   return (
     <>
