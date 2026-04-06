@@ -1,7 +1,7 @@
 import { Header } from "./components/layout/Header";
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
-import { MovieDetailsPage } from "./pages/MovieDetailsPage";
+import { MovieDetailsPage } from "./pages/MovieDetails/MovieDetailsPage";
 import { MovieProvider } from "./context/MovieContext";
 function App() {
   
