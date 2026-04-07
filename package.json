@@ -289,6 +289,7 @@
   "devDependencies": {
     "concurrently": "^9.2.1"
   },
+  
   "scripts": {
     "server": "npm run dev --prefix server",
     "client": "npm run dev --prefix client",
@@ -301,7 +302,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/IsraelPina32/prime-movies-clone/issues"
   },

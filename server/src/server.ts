@@ -9,7 +9,8 @@ const app = express();
 
 app.use(cors({
     origin: ['https://prime-movies-clone.vercel.app',
-            "http://localhost:5173"
+            "http://localhost:5173",
+            "http://127.0.0.1:5173"
     ],
     methods: ['GET', 'POST', 'OPTIONS'],
     credentials: true,
@@ -111,9 +112,8 @@ app.get('/api/movies/:id', async(req, res) => {
     };
 });
 
-if(process.env.NODE_ENV !== 'production') {
+
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => console.log(`Dev server on http://localhost:${PORT}`));
-};
 
 export default app;
