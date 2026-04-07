@@ -1,11 +1,22 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import axios from 'axios';
+import helmet from 'helmet';
+import { rateLimit } from 'express-rate-limit';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const app = express();
+app.use(helmet());
+app.use(express.json());
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 1000, // limit each IP to 1000 requests per windowMs
+    message: "Too many requests from this IP, please try again after 15 minutes."
+});
+app.use(limiter);
 
 app.use(cors({
     origin: ['https://prime-movies-clone.vercel.app',
@@ -113,7 +124,10 @@ app.get('/api/movies/:id', async(req, res) => {
 });
 
 
-    const PORT = process.env.PORT || 3001;
-    app.listen(PORT, () => console.log(`Dev server on http://localhost:${PORT}`));
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3001;
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[SECURITY ON]Server listening on 0.0.0.0:${PORT}`);
+});
 
 export default app;
