@@ -10,9 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.14.0",
     "framer-motion": "^12.29.2",
     "lucide-react": "^0.562.0",
-    "movie-trailer": "^3.2.1",
+    "movie-trailer": "^3.2.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-router-dom": "^7.12.0"
@@ -38,6 +39,10 @@
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"
   },
+  "overrides": {
+  "trim-newlines": "^4.0.2",
+  "meow": "^9.0.0"
+},
   "description": "A robust, scalable, and clean-coded movie discovery application built with **React 19** and **Vite**, focusing on high-performance filtering and persistent user experience.",
   "main": "eslint.config.js",
   "repository": {
