@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError, type AxiosResponse } from "axios";
 
 /**    
  * Global Axios instance configuration
@@ -11,7 +11,7 @@ const api = axios.create({
     baseURL: API_BASE_URL,
     timeout: 10000, // 10 seconds timeout
     headers: {
-        'Content-Type': 'aplication/json'
+        'Content-Type': 'application/json'
     }
 });
 
@@ -20,9 +20,13 @@ const api = axios.create({
  * Automatically injects the API key into every request to avoid repetion.
  */
 
-api.interceptors.request.use((response) => response, (error) => {
-    console.error('API Error:', error);
-    return Promise.reject(error);
+api.interceptors.response.use(
+    (response: AxiosResponse) => {
+    return response;
+   },
+   (error: AxiosError) => {
+        console.error('API Error:', error.message);
+        return Promise.reject(error);
    }
 );
 
