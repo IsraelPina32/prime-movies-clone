@@ -6,10 +6,7 @@ interface MovieCardProps {
   movie: Movie;
 }
 
-
 export const MovieCard  = ({ movie }: MovieCardProps) => {
-
-
 
   return (
   <Link to={`/movie/${movie.imdbID}`} className='block no-underline'>
