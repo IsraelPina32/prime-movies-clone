@@ -1,13 +1,6 @@
 import  { createContext, useContext, useState, useEffect, type ReactNode} from "react";
 
-
-interface Movie {
-    imdbID: string;
-    Title: string;
-    Year: string;
-    Poster: string;
-    Type: string;
-}
+import { type Movie } from "../types/movie";
 
 interface FavoritesContextData {
     favorites: Movie[];
