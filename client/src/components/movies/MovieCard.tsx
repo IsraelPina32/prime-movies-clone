@@ -1,6 +1,7 @@
 import { SmartImage } from '../ui/SmartImage';
 import type { Movie } from '../../types/movie';
 import { Link } from 'react-router-dom';
+import { FavoriteButton } from './FavoriteButton';
 
 interface MovieCardProps {
   movie: Movie;
@@ -9,7 +10,8 @@ interface MovieCardProps {
 export const MovieCard  = ({ movie }: MovieCardProps) => {
 
   return (
-  <Link to={`/movie/${movie.imdbID}`} className='block no-underline'>
+    <div className="relative group">
+    <Link to={`/movie/${movie.imdbID}`} className='block no-underline'>
     <article className="relative group bg-[#1a242f] rounded-lg overflow-hidden isolate transition-all duration-300 hover:scale-105 shadow-2xl transform-gpu border border-white/5">
       <div className="aspect-[2/3] w-full overflow-hidden bg-slate-800">
         <SmartImage 
@@ -30,6 +32,8 @@ export const MovieCard  = ({ movie }: MovieCardProps) => {
         </p>
       </div>
     </article>
-  </Link>
+    </Link>
+       <FavoriteButton movie={movie} />
+  </div>
   );
 };
