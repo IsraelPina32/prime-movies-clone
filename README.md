@@ -52,6 +52,41 @@ src/
 
 ---
 
+## 🛡️ Security Architecture (Backend)
+
+The backend server is built with a focus on **Hardening** and resilience, mitigating the most common vulnerabilities defined by the **OWASP Top 10**.
+
+### 🔐 Technical Implementations
+
+The following libraries and strategies are implemented in `server.ts`:
+
+| Feature | Technology | Objective |
+| :--- | :--- | :--- |
+| **Security Headers** | `Helmet.js` | Configures HTTP headers to prevent XSS, Clickjacking, and MIME-sniffing. |
+| **Rate Limiting** | `express-rate-limit` | Prevents Brute-force and DoS attacks by limiting requests per IP. |
+| **CORS Policy** | `cors` | Restricts API access to trusted origins only (Frontend integration). |
+| **Env Management** | `dotenv` | Ensures sensitive keys (OMDB API) are never exposed in the source code. |
+
+---
+
+### 🚀 Security Configuration Snippets
+
+#### 1. Rate Limiting Strategy
+ 
+implemented a traffic threshold to ensure service availability and prevent resource abuse:
+```typescript
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100, 
+  message: ,
+  standardHeaders: true, 
+  legacyHeaders: false,
+});
+app.use(limiter);
+
+```
+
+
 ## 🔧 Installation
 
 ### Clone the repository
