@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "outputDirectory": "client/dist",
   "builds": [
     {
       "src": "server/src/server.ts",
@@ -20,9 +19,6 @@
     {
       "source": "/(.*)",
       "destination": "/client/$1"
-    },
-    {
-      "outputDirectory": "dist"
     }
   ]
 }
