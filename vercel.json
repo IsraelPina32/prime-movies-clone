@@ -20,6 +20,9 @@
     {
       "source": "/(.*)",
       "destination": "/client/$1"
+    },
+    {
+      "outputDirectory": "dist"
     }
   ]
 }
