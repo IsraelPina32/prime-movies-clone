@@ -23,7 +23,7 @@ export function FavoritesPage() {
           
           <div className="flex flex-col gap-4 leading-none">
             <h1 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight text-center">
-              Meus Favoritos
+              Meus Favoritos.
             </h1>
             {favorites.length > 0 && (
               <span className=" bg-prime-blue/20 text-prime-blue py-2 px-4 rounded-full text-base font-bold border border-prime-blue/30 shadow-lg h-fit self-center min-w-[1.75rem]">
