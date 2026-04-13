@@ -1,8 +1,8 @@
-import { useFavorites } from "../../context/FavoritesCotext";
 import { MovieCard } from "../../components/movies/MovieCard";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Film, HeartOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useFavorites } from "../../hooks/useFavorites";
 
 export function FavoritesPage() {
   const { favorites } = useFavorites();

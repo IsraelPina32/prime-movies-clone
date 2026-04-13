@@ -3,7 +3,7 @@ import { useMovieContext } from '../../context/MovieContext';
 import { useState } from 'react';
 import { FilterSidebar } from './FiltererSidebar';
 import { Menu, Search, Heart} from 'lucide-react';
-import { useFavorites } from '../../context/FavoritesCotext';
+import { useFavorites } from '../../hooks/useFavorites';
 
 export const Header =  () => {
   const { searchTerm, setSearchTerm} = useMovieContext();

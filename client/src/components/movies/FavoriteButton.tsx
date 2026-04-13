@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
 import { motion } from "framer-motion";
-import { useFavorites } from "../../context/FavoritesCotext";
+import { useFavorites } from "../../hooks/useFavorites";
 import { type Movie } from "../../types/movie";
 
 interface FavoriteButtonProps {
