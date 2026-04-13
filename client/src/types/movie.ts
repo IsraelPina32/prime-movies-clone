@@ -1,4 +1,5 @@
 export interface Movie {
+    readonly id? : string;
     readonly imdbID: string;
     Title: string;
     Year: string;
