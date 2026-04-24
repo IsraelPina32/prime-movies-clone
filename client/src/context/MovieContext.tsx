@@ -1,4 +1,4 @@
-import  { createContext, useContext, useState, type ReactNode, useEffect, useMemo, useCallback } from "react";
+import { createContext, useContext, useState, type ReactNode, useEffect, useMemo, useCallback } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { movieService } from "../services/movieService";
 import type { Movie } from "../types/movie";
@@ -20,15 +20,15 @@ interface MovieContextData {
   searchMovies: (options: SearchOptions) => Promise<void>;
   currentPage: number,
   setCurrentPage: (page: number) => void;
-  totalResults: number; 
+  totalResults: number;
 };
 
-interface SearchOptions  {
-   query: string, 
-   genre?: string, 
-   year?: string,
-   page?: number;
-   type?: string;
+interface SearchOptions {
+  query: string,
+  genre?: string,
+  year?: string,
+  page?: number;
+  type?: string;
 };
 
 const MovieContext = createContext<MovieContextData>({} as MovieContextData);
@@ -48,7 +48,7 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalResults, setTotalResults] = useState(0);
 
-  const fetchMovies = useCallback(async ({query, genre = '', year = '', page = 1, type = ''}: SearchOptions) => {
+  const fetchMovies = useCallback(async ({ query, genre = '', year = '', page = 1, type = '' }: SearchOptions) => {
     if (!query.trim() && !genre && !year) {
       setMovies([]);
       setTotalResults(0);
@@ -59,7 +59,7 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
     setError(null);
     try {
       const data: any = await movieService.searchMovies(query, genre, year, Number(page), type);
-     
+
       if (data && data.Search && Array.isArray(data.Search)) {
         const mappeMovies: Movie[] = data.Search.map((m: any) => ({
           id: m.imdbID || m.id,
@@ -68,14 +68,15 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
           Year: m.Year,
           Type: m.Type || 'movie',
           Poster: m.Poster === 'N/A' ? null : m.Poster,
-          imdbRating: (Math.random() * (9.5 - 5.0) + 5.0).toFixed(1)
+          imdbRating: m.imdbRating || 'N/A',
+          Rated: m.Rated || 'N/A'
         }));
         setMovies(mappeMovies);
         setTotalResults(Number(data.totalResults));
       } else {
         setMovies([]);
         setTotalResults(0);
-        if( data && data.Error !== 'Movie not found!') setError(data.Error);
+        if (data && data.Error !== 'Movie not found!') setError(data.Error);
       }
     } catch (err) {
       setError("Falha na conexão com o servidor.");
@@ -88,9 +89,9 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const term = debouncedTerm.trim();
 
-    if(term) {
-       fetchMovies({query: debouncedTerm, genre: selectedGenre !== "" ? selectedGenre : undefined, year: selectedYear !== "" ? selectedYear : undefined, page: currentPage, type: selectedType || undefined});
-       localStorage.setItem('@PrimeSearch:searchTerm', debouncedTerm);
+    if (term) {
+      fetchMovies({ query: debouncedTerm, genre: selectedGenre !== "" ? selectedGenre : undefined, year: selectedYear !== "" ? selectedYear : undefined, page: currentPage, type: selectedType || undefined });
+      localStorage.setItem('@PrimeSearch:searchTerm', debouncedTerm);
     }
   }, [debouncedTerm, selectedGenre, selectedYear, currentPage, selectedType, fetchMovies]);
 
