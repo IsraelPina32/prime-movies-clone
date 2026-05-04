@@ -8,9 +8,10 @@ interface SmartImageProps {
   alt: string;
   className?: string;
   opacity?: number;
+  draggable?: boolean;
 }
 
-export const SmartImage: React.FC<SmartImageProps> = ({ src, alt, className }) => {
+export const SmartImage: React.FC<SmartImageProps> = ({ src, alt, className, draggable }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -41,11 +42,13 @@ export const SmartImage: React.FC<SmartImageProps> = ({ src, alt, className }) =
         initial={{ opacity: 0 }}
         animate={{ opacity: isLoaded ? 1 : 0 }}
         transition={{ duration: 0.5, ease: "easeIn" }}
+        draggable={draggable}
         onLoad={() => setIsLoaded(true)}
         onError={() => {
           setHasError(true)
           setIsLoaded(true);
         }}
+        onDragStart={(e) => e.preventDefault}
         className={`${className} ${isLoaded ? 'scale-100' : 'scale-110'} transition-transform duration-700`}
         loading="lazy"
       />
