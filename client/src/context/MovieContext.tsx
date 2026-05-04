@@ -7,6 +7,7 @@ interface MovieContextData {
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   movies: Movie[];
+  setMovies: (movies: Movie[]) => void;
   loading: boolean;
   error: string | null;
   selectedGenre: string;
@@ -21,6 +22,8 @@ interface MovieContextData {
   currentPage: number,
   setCurrentPage: (page: number) => void;
   totalResults: number;
+  favorites: Movie[];
+  setFavorites: (movies: Movie[]) => void;
 };
 
 interface SearchOptions {
@@ -36,24 +39,30 @@ const MovieContext = createContext<MovieContextData>({} as MovieContextData);
 export const MovieProvider = ({ children }: { children: ReactNode }) => {
 
   const [searchTerm, setSearchTerm] = useState(() => localStorage.getItem('@PrimeSearch:searchTerm') || '');
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
 
   const [selectedGenre, setSelectedGenre] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedType, setSelectedType] = useState<'' | 'movie' | 'series'>('');
   const [selectedRating, setSelectedRating] = useState<number>(0);
-  const [movies, setMovies] = useState<Movie[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+
+  const [favorites, setFavorites] = useState<Movie[]>(() => {
+    const storedFavorites = localStorage.getItem('@PrimeMovies:favorites');
+    return storedFavorites ? JSON.parse(storedFavorites) : [];
+  });
+
   const debouncedTerm = useDebounce(searchTerm, 500);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalResults, setTotalResults] = useState(0);
 
   const fetchMovies = useCallback(async ({ query, genre = '', year = '', page = 1, type = '' }: SearchOptions) => {
     if (!query.trim() && !genre && !year) {
       setMovies([]);
       setTotalResults(0);
       return;
-    }
+    };
 
     setLoading(true);
     setError(null);
@@ -86,6 +95,11 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
     }
   }, []);
 
+  const updateFavorites = useCallback((newOrder: Movie[]) => {
+    setFavorites(newOrder);
+    localStorage.setItem('@PrimeMovies:favorites', JSON.stringify(newOrder));
+  }, []);
+
   useEffect(() => {
     const term = debouncedTerm.trim();
 
@@ -100,8 +114,8 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
   }, [debouncedTerm, selectedGenre, selectedYear, selectedType])
 
   const value = useMemo(() => ({
-    searchTerm, setSearchTerm, movies, loading, error, searchMovies: fetchMovies, selectedGenre, setSelectedGenre, selectedYear, setSelectedYear, selectedType, setSelectedType, selectedRating, setSelectedRating, currentPage, setCurrentPage, totalResults
-  }), [searchTerm, setSearchTerm, movies, loading, error, fetchMovies, selectedYear, selectedGenre, selectedType, selectedRating, currentPage, totalResults]);
+    searchTerm, setSearchTerm, movies,setMovies, loading, error, searchMovies: fetchMovies, selectedGenre, setSelectedGenre, selectedYear, setSelectedYear, selectedType, setSelectedType, selectedRating, setSelectedRating, favorites, setFavorites: updateFavorites,  currentPage, setCurrentPage, totalResults
+  }), [searchTerm, setSearchTerm, movies, favorites, loading, error, fetchMovies, selectedYear, selectedGenre, selectedType, selectedRating, currentPage, totalResults]);
 
   return (
     <MovieContext.Provider value={value}>
