@@ -2,6 +2,7 @@ import { SmartImage } from '../ui/SmartImage';
 import type { Movie } from '../../types/movie';
 import { Link } from 'react-router-dom';
 import { FavoriteButton } from './FavoriteButton';
+import { RatingBadge } from '../ui/RatingBadge';
 
 interface MovieCardProps {
   movie: Movie;
@@ -43,10 +44,8 @@ export const MovieCard = ({ movie }: MovieCardProps) => {
             )}
             {movie.imdbRating && movie.imdbRating !== 'N/A' && (
               <div className="flex items-center gap-1.5">
-                <span className="text-gray-500">•</span>
-                <span className="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-1.5 py-0.5 rounded-md font-bold">
-                  IMDb {movie.imdbRating}
-                </span>
+               
+                <RatingBadge rating={movie.imdbRating}/>
               </div>
             )}
           </div>
