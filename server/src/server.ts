@@ -1,11 +1,20 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
+import path from 'path';
 import axios from 'axios';
 import helmet from 'helmet';
 import { rateLimit } from 'express-rate-limit';
 import dotenv from 'dotenv';
 
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+    dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
+}
+
+const OMDB_API_KEY = process.env.OMDB_API_KEY;
+
+if (!OMDB_API_KEY) {
+    throw new Error("FALHA CRÍTICA: OMDB_API_KEY não encontrada.");
+}
 
 const app = express();
 app.use(helmet());
@@ -27,14 +36,12 @@ app.use(cors({
     credentials: true,
 }));
 
-const OMDB_API_KEY = process.env.OMDB_API_KEY;
-
 interface OMDBasicMovie {
     imdbID: string;
     Title: string;
     Year: string;
     Poster: string;
-}
+};
 
 app.get('/api/movies', async (req: Request, res: Response) => {
 
@@ -57,8 +64,9 @@ app.get('/api/movies', async (req: Request, res: Response) => {
                 s: query,
                 y: validYear,
                 page: page || 1,
-                type: type || undefined
+                type: type || undefined,
             },
+            timeout: 5000, // 5 seconds timeout for the OMDB API request
         });
         if (searchResponse.data.Response === "False") {
             return res.json({ Search: [], totalResults: "0" });
@@ -89,7 +97,7 @@ app.get('/api/movies', async (req: Request, res: Response) => {
             finalResults = allEnrichedMovies.filter((m: any) =>
                 m.Genre && m.Genre.toLowerCase().includes((genre as string).toLowerCase())
             );
-        }
+        };
 
         res.json({
             Search: finalResults,
@@ -107,7 +115,6 @@ app.get('/api/movies/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-
         const response = await axios.get('https://www.omdbapi.com/', {
             params: { i: id, plot: 'full', apikey: OMDB_API_KEY, }
         });
@@ -128,7 +135,7 @@ app.get('/api/movies/:id', async (req, res) => {
         } else {
             console.error("Error fetching movie details from OMDB API.", error);
             res.status(500).json({ error: "An unexpected error occurred." })
-        }
+        };
     };
 });
 
