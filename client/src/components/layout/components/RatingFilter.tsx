@@ -1,4 +1,4 @@
-import { useMovieContext } from "../../../context/MovieContext";
+import { useMovieContext } from "../../../hooks/useMovieContext";
 
 
 export const RatingFilter = () => {

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useMovieContext } from "../../../../context/MovieContext";
+import { useMovieContext } from "../../../../hooks/useMovieContext";
 import { MovieCard } from "../../../movies/MovieCard";
 import { MovieGridSkeleton } from "../../../movies/MovieGridSkeleton";
 import { ErrorState } from "../../../ui/ErrorState";

@@ -1,4 +1,4 @@
-import { useMovieContext } from "../../../context/MovieContext";
+import { useMovieContext } from "../../../hooks/useMovieContext";
 
 const GENRES = ["Action", "Comedy", "Drama", "Horror", "Sci-Fi", "Thriller", "Adventure", "Animation", "Biography", "Crime", "Documentary", "Family", "Fantasy", "History", "Music", "Mystery", "Romance", "Sport", "War", "Western"];
 
