@@ -288,7 +288,8 @@
   },
   "devDependencies": {
     "@types/node": "^25.6.2",
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "tsconfig-paths": "^4.2.0"
   },
   "scripts": {
     "server": "npm run dev --prefix server",
