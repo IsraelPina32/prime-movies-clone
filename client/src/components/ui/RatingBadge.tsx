@@ -21,7 +21,7 @@ export const RatingBadge = ({ rating }: RatingBadgeProps) => {
     <div className="flex items-center gap-1.5">
       <span className="text-gray-500">•</span>
       <span className={`px-1.5 py-0.5 rounded-md font-bold border ${colorClasses}`}>
-        IMDb {rating}
+         IMDb {rating} 
       </span>
     </div>
   );
