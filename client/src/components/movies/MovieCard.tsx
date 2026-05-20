@@ -42,7 +42,7 @@ export const MovieCard = ({ movie }: MovieCardProps) => {
                 </span>
               </div>
             )}
-            {movie.imdbRating && movie.imdbRating !== 'N/A' && (
+            {movie.imdbRating && movie.imdbRating !== 'sem IMDB.' && (
               <div className="flex items-center gap-1.5">
                
                 <RatingBadge rating={movie.imdbRating}/>
