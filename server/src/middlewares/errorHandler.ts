@@ -1,10 +1,11 @@
-import {  Response, NextFunction } from 'express';
+import { ErrorRequestHandler } from 'express';
 
 
-export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
-    console.error(' [Global Error]:', err.stack);
+export const errorHandler: ErrorRequestHandler = (err, req, res, next): void => {
+    console.error(' [Global Error]:', err.message);
 
     res.status(500).json({
         error: err.message || 'Internal Server Error',
-    })
-}
+        stack: process.env.NODE_ENV === 'production' ? '🔒' : err.stack
+    });
+};
