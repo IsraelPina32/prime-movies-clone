@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { useMovieContext } from '../../context/MovieContext';
+import { useMovieContext } from '../../hooks/useMovieContext';
 import { useState } from 'react';
 import { FilterSidebar } from './FiltererSidebar';
 import { Menu, Search, Heart} from 'lucide-react';
