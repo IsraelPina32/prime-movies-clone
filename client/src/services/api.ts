@@ -1,11 +1,13 @@
-import axios, { AxiosError, type AxiosResponse } from "axios";
+import axios, { type AxiosResponse } from "axios";
 
 /**    
  * Global Axios instance configuration
  * Centralizes API base URL and common parameters
 */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : 'http://localhost:3001/api';
+const API_BASE_URL = typeof window !== 'undefined' && !window.location.hostname.includes('localhost')
+    ? '/api'
+    : (import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : 'http://localhost:3001/api');
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -24,8 +26,8 @@ api.interceptors.response.use(
     (response: AxiosResponse) => {
     return response;
    },
-   (error: AxiosError) => {
-        console.error('API Error:', error.message);
+   (error) => {
+        console.error('API Error:', error.message || error);
         return Promise.reject(error);
    }
 );
