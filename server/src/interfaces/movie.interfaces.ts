@@ -5,9 +5,14 @@ export interface OMDBMovieRaw {
     Type: string;
     Poster: string;
     Rated?: string;
-    imdbRating?: string;
-    Plot?: string;
+    Released?: string;
+    Runtime?: string;
     Genre?: string;
+    Director?: string;
+    Writer?: string;
+    Actors?: string;
+    Plot?: string;
+    imdbRating?: string;
 };
 
 export interface Movie {
@@ -15,8 +20,13 @@ export interface Movie {
     title: string;
     year: string;
     poster: string;
-    rating: string;
-    classification: string;
-    plot: string;
-    genres: string[];
+    imdbRating?: string;
+    runtime?: string;
+    genre?: string;
+    plot?: string;
+    director?: string;
+    actors?: string;
+    type: string;
+    writer?: string;
+    released?: string;
 }
