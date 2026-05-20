@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, type ReactNode, useEffect, useMemo, useCallback } from "react";
+import { createContext, useState, type ReactNode, useEffect, useMemo, useCallback } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import { movieService } from "../services/movieService";
 import type { Movie } from "../types/movie";
@@ -34,6 +34,25 @@ interface SearchOptions {
   type?: string;
 };
 
+interface RawMovieItem {
+  imdbID?: string;
+  id?: string;
+  _id?: string;
+  Title?: string;
+  title?: string;
+  Year?: string;
+  year?: string;
+  Type?: string;
+  type?: string;
+  Poster?: string | null; 
+  poster?: string | null; 
+  imdbRating?: string;
+  rating?: string;
+  Rating?: string;
+  Rated?: string;
+  rated?: string;
+}
+
 const MovieContext = createContext<MovieContextData>({} as MovieContextData);
 
 export const MovieProvider = ({ children }: { children: ReactNode }) => {
@@ -50,6 +69,7 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
   const [selectedType, setSelectedType] = useState<'' | 'movie' | 'series'>('');
   const [selectedRating, setSelectedRating] = useState<number>(0);
 
+
   const [favorites, setFavorites] = useState<Movie[]>(() => {
     const storedFavorites = localStorage.getItem('@PrimeMovies:favorites');
     return storedFavorites ? JSON.parse(storedFavorites) : [];
@@ -57,7 +77,7 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
 
   const debouncedTerm = useDebounce(searchTerm, 500);
 
-  const fetchMovies = useCallback(async ({ query, genre = '', year = '', page = 1, type = '' }: SearchOptions) => {
+  const fetchMovies = useCallback(async ({ query, genre = '', year = '', page = 1, type }: SearchOptions) => {
     if (!query.trim() && !genre && !year) {
       setMovies([]);
       setTotalResults(0);
@@ -67,33 +87,35 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     setError(null);
     try {
-      const data: any = await movieService.searchMovies(query, genre, year, Number(page), type);
+      const response = await movieService.searchMovies({ query, genre, year, page, type })
 
-      if (data && data.Search && Array.isArray(data.Search)) {
-        const mappeMovies: Movie[] = data.Search.map((m: any) => ({
-          id: m.imdbID || m.id,
-          imdbID: m.imdbID,
-          Title: m.Title,
-          Year: m.Year,
-          Type: m.Type || 'movie',
-          Poster: m.Poster === 'N/A' ? null : m.Poster,
-          imdbRating: m.imdbRating || 'N/A',
-          Rated: m.Rated || 'N/A'
-        }));
-        setMovies(mappeMovies);
-        setTotalResults(Number(data.totalResults));
+      if (response && Array.isArray(response.movies)) {
+        const mappedMovies: Movie[] = response.movies.map((item: RawMovieItem) => ({
+          id: item.imdbID || item.id || item._id,
+          imdbID: item.imdbID || item.id || '',
+          Title: item.Title || item.title || 'Sem título',
+          Year: item.Year || item.year || 'N/A',
+          Type: item.Type || item.type || 'movie',
+          Poster: item.Poster || item.poster || null,
+          imdbRating: item.imdbRating || item.rating || 'N/A',
+          Rating: item.Rating || item.rating || 'N/A',
+          Rated: item.Rated || item.rated || 'N/A',
+        } as Movie));
+
+        setMovies(mappedMovies);
+        const total = Number(response.totalResults || response.totalResults || 0);
+        setTotalResults(total);
       } else {
         setMovies([]);
         setTotalResults(0);
-        if (data && data.Error !== 'Movie not found!') setError(data.Error);
       }
-    } catch (err) {
-      setError("Falha na conexão com o servidor.");
+    } catch (error) {
+      console.error("Erro in process...:", error);
       setMovies([]);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [])
 
   const updateFavorites = useCallback((newOrder: Movie[]) => {
     setFavorites(newOrder);
@@ -114,8 +136,10 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
   }, [debouncedTerm, selectedGenre, selectedYear, selectedType])
 
   const value = useMemo(() => ({
-    searchTerm, setSearchTerm, movies,setMovies, loading, error, searchMovies: fetchMovies, selectedGenre, setSelectedGenre, selectedYear, setSelectedYear, selectedType, setSelectedType, selectedRating, setSelectedRating, favorites, setFavorites: updateFavorites,  currentPage, setCurrentPage, totalResults
-  }), [searchTerm, setSearchTerm, movies, favorites, loading, error, fetchMovies, selectedYear, selectedGenre, selectedType, selectedRating, currentPage, totalResults]);
+    searchTerm, setSearchTerm, movies, setMovies, loading, error, searchMovies: fetchMovies, selectedGenre, setSelectedGenre, selectedYear, setSelectedYear, selectedType, setSelectedType, selectedRating, setSelectedRating, favorites, setFavorites: updateFavorites, currentPage, setCurrentPage, totalResults
+  }), [searchTerm, movies, loading, error, fetchMovies, selectedGenre,
+    selectedYear, selectedType, selectedRating, favorites,
+    updateFavorites, currentPage, totalResults]);
 
   return (
     <MovieContext.Provider value={value}>
@@ -124,4 +148,4 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useMovieContext = () => useContext(MovieContext);
+export { MovieContext };
