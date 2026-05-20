@@ -1,9 +1,6 @@
 import api from "./api";
 import type { Movie } from "../types/movie";
 
-/**
- * MovieService - Camada de integração com a API
- */
 
 export interface MovieSearchResponse {
   movies: Movie[];
