@@ -1,35 +1,60 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { movieService } from "../../services/movieService";
+import type { MovieDetail } from "../../types/movie";
 import { SmartImage } from "../../components/ui/SmartImage";
 import { formatRuntime } from "../../utils/formatters";
-import { movieService } from "../../services/movieService";
-import { TrailerSection } from "./components/TrailerSection";
-import type { MovieDetail } from "../../types/movie";
+import { TrailerSection } from "../MovieDetails/components/TrailerSection";
+import { RatingBadge } from "../../components/ui/RatingBadge";
+
 
 export const MovieDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [data, setMovie] = useState<MovieDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchMovieDetails = async () => {
+      if (!id) return;
       setLoading(true);
 
-      if(!id) return;
       try {
-        const data = await movieService.getMovieDetails(id);
 
-        setMovie(data);
+        const rawData = await movieService.getMovieDetails(id);
+
+        if (isMounted && rawData) {
+          const formattedData: MovieDetail = {
+            imdbID: id,
+            Rating: rawData.imdbRating || "N/A",
+            Rated: rawData.rated || "N/A",
+            Title: rawData.title || "Sem título",
+            Year: rawData.year || "N/A",
+            Poster: rawData.poster === "" ? null : rawData.poster,
+            imdbRating: rawData.imdbRating || "N/A",
+            Runtime: rawData.runtime || "N/A",
+            Genre: rawData.genre || "N/A",
+            Plot: rawData.plot || "Sinopse não disponível",
+            Director: rawData.director || "N/A",
+            Actors: rawData.actors || "N/A",
+            Type: rawData.type || "movie",
+            Writer: rawData.writer || "N/A",
+            Released: rawData.released || "N/A",
+          };
+          setMovie(formattedData);
+        }
       } catch (error) {
         console.error("Erro ao carregar detalhes:", error);
       } finally {
-        setLoading(false); 
+        if (isMounted) setLoading(false);
       }
     };
 
-    if (id) fetchMovieDetails();
+    fetchMovieDetails();
+    return () => { isMounted = false; }; // Cleanup function
   }, [id]);
 
   if (loading) {
@@ -41,16 +66,20 @@ export const MovieDetailsPage = () => {
   }
 
   if (!data) return null;
+  const hasValidRating = 
+  data.imdbRating && 
+  data.imdbRating !== 'N/A' && 
+  data.imdbRating !== 'sem IMDB.' && 
+  data.imdbRating !== '';
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="max-w-[1440px] mx-auto px-10 py-10"
     >
-      
-      <button 
-        onClick={() => navigate(-1)} 
+      <button
+        onClick={() => navigate(-1)}
         className="mb-8 flex items-center gap-2 text-gray-400 hover:text-white transition-colors font-bold group"
       >
         <span className="text-xl group-hover:-translate-x-1 transition-transform">←</span>
@@ -64,14 +93,27 @@ export const MovieDetailsPage = () => {
 
         <div className="p-8 md:p-12 flex flex-col justify-center">
           <h1 className="text-4xl text-prime-blue md:text-5xl font-black mb-4 leading-tight">{data.Title}</h1>
-          
-          <div className="flex  items-center flex-wrap gap-6 mb-9 text-sm font-bold">
+
+          <div className="flex items-center flex-wrap gap-6 mb-9 text-sm font-bold">
             <span className="text-prime-blue uppercase tracking-widest">{data.Year}</span>
-            <span className="text-gray-400">{data.Type === 'series' ? 'Série de TV' : (data.Runtime !== "N/A" ? formatRuntime(data.Runtime) : "Tempo não informado")}</span>
-            <span className="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-3 py-1 rounded-md">
-              IMDb {data.imdbRating}
+            <span className="text-gray-400">
+              {data.Type === 'series' ? 'Série de TV' : (data.Runtime !== "N/A" ? formatRuntime(data.Runtime) : "Tempo não informado")}
             </span>
-            <span className="text-gray-400 border border-gray-700 px-3 py-1 rounded-md">{data.Genre}</span>
+
+            {hasValidRating ? (
+              <div className="flex items-center gap-1.5">
+
+                <RatingBadge rating={data.imdbRating} />
+              </div>
+            ) :
+              (
+                <span className="bg-gray-500/10 text-gray-400 border border-gray-500/20 px-3 py-1 rounded-md">
+                  Sem nota IMDb
+                </span>
+              )}
+            <span className="text-gray-400 border border-gray-700 px-3 py-1 rounded-md">{data.Genre}
+              
+            </span>
           </div>
 
           <p className="text-gray-300 text-lg leading-relaxed mb-10 max-w-2xl italic">
@@ -79,17 +121,23 @@ export const MovieDetailsPage = () => {
           </p>
 
           <div className="grid grid-cols-1 gap-7 pt-7 border-t border-white/5">
-           
-            <p className="text-yellow-500 tracking-tighter
-            "><span className="text-gray-500 font-bold uppercase tracking-tighter mr-2 fon">{data.Type === 'series' ? 'Criadores: ' : 'Director: '}</span>{data.Director !== "N/A" ? data.Director : (data.Writer !== "N/A" ? data.Writer : "Informação indisponível")}</p>
-            <p className="text-yellow-500  tracking-tighter"><span className="text-gray-500 font-bold uppercase tracking-tighter mr-2">Elenco:</span>{data.Actors !== "N/A" ? data.Actors : "Informação indisponivel"}</p>
+            <p className="text-yellow-500 tracking-tighter">
+              <span className="text-gray-500 font-bold uppercase tracking-tighter mr-2">
+                {data.Type === 'series' ? 'Criadores: ' : 'Director: '}
+              </span>
+              {data.Director !== "N/A" ? data.Director : (data.Writer !== "N/A" ? data.Writer : "Informação indisponível")}
+            </p>
+            <p className="text-yellow-500 tracking-tighter">
+              <span className="text-gray-500 font-bold uppercase tracking-tighter mr-2">Elenco:</span>
+              {data.Actors !== "N/A" ? data.Actors : "Informação indisponível"}
+            </p>
 
             <div className="mt-4">
-              <TrailerSection movieTitle={data.Title} year={data.Year}/>
-            </div> 
+              <TrailerSection movieTitle={data.Title} year={data.Year} />
+            </div>
           </div>
         </div>
-      </div>\
+      </div>
     </motion.div>
   );
 };
