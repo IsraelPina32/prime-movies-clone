@@ -10,7 +10,7 @@ interface MovieListProps {
 export const MovieList = ({ movies, onReorder }: MovieListProps) => {
   return (
     <Reorder.Group 
-      axis="x" 
+      axis="y" 
       values={movies} 
       onReorder={onReorder}
       className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-10 justify-items-center w-full p-3"
