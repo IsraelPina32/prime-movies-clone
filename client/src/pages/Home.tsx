@@ -1,4 +1,4 @@
-import { useMovieContext } from "../context/MovieContext";
+import { useMovieContext } from "../hooks/useMovieContext";
 import { Pagination } from "../components/Pagination";
 import { useEffect } from "react";
 import { MovieList } from "../components/movies/MovieList";
