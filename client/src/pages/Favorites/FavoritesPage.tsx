@@ -84,7 +84,6 @@ export function FavoritesPage() {
             </motion.div>
           )}
         </AnimatePresence>
-        
       </div>
     </main>
   );
