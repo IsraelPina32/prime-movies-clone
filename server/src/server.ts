@@ -18,9 +18,9 @@ app.use(cors({
 app.use(express.json());
 
 app.options('*', cors()); 
-app.use('/api', apiLimiter);
-app.get('/api/movies', getMovies);
-app.get('/api/movies/:id', getMovieDetails);
+app.use(apiLimiter);
+app.get(['/movies', '/api/movies'], getMovies);
+app.get(['/movies/:id', '/api/movies/:id'], getMovieDetails);
 app.get('/api/movie/:id', async (req, res) => {
     const { id } = req.params; 
     const movieService = new MovieService(); 
