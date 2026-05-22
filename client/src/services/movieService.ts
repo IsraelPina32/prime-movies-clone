@@ -16,7 +16,7 @@ export const movieService = {
   }): Promise<MovieSearchResponse> => {
     try {
 
-      const response = await api.get('/api/movies', {
+      const response = await api.get('/movies', {
         params: {
           query: options.query,
           page: options.page
