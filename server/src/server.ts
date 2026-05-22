@@ -24,9 +24,9 @@ app.use(apiLimiter);
 
 const apiRouter = express.Router();
 
-app.get('/movies', getMovies);
-app.get('/api/movies/:id', getMovieDetails);
-app.get('/api/movie/:id', async (req, res) => {
+apiRouter.get('/movies', getMovies);
+apiRouter.get('/api/movies/:id', getMovieDetails);
+apiRouter.get('/api/movie/:id', async (req, res) => {
     const { id } = req.params; 
     const movieService = new MovieService(); 
 
