@@ -1,11 +1,11 @@
-import api from "./api";
+import  api  from "./api"; 
 import type { Movie } from "../types/movie";
-
 
 export interface MovieSearchResponse {
   movies: Movie[];
   totalResults: number;
 }
+
 export const movieService = {
   searchMovies: async (options: {
     query: string;
@@ -15,16 +15,21 @@ export const movieService = {
     type?: string;
   }): Promise<MovieSearchResponse> => {
     try {
+
       const response = await api.get('/movies', {
-        params: options
+        params: {
+          query: options.query,
+          page: options.page
+        }
       });
 
       return response.data;
     } catch (error) {
       console.error('Failed to request the search endpoint:', error);
-      return {movies: [], totalResults: 0};
+      return { movies: [], totalResults: 0 };
     }
   },
+
   getMovieDetails: async (id: string) => {
     try {
       const response = await api.get(`/movies/${id}`);
@@ -34,4 +39,4 @@ export const movieService = {
       throw error;
     }
   }
-}; 
+};
