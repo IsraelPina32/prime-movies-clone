@@ -10,17 +10,19 @@ import { MovieService } from '@/services/movie.services';
 const app = express();
 
 app.use(helmet());
-app.use(cors({
+const corsOptions = {
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-app.use(express.json());
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
 
-app.options('*', cors()); 
+app.use(cors(corsOptions));
+app.use(express.json());
 app.use(apiLimiter);
 app.get(['/movies', '/api/movies'], getMovies);
-app.get(['/movies/:id', '/api/movies/:id'], getMovieDetails);
+app.get(['/api/movies/:id', '/api/movies/:id'], getMovieDetails);
 app.get('/api/movie/:id', async (req, res) => {
     const { id } = req.params; 
     const movieService = new MovieService(); 
