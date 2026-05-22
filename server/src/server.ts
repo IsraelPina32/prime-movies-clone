@@ -21,9 +21,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(apiLimiter);
+
 const apiRouter = express.Router();
-app.get(['/movies', '/api/movies'], getMovies);
-app.get(['/api/movies/:id', '/api/movies/:id'], getMovieDetails);
+
+app.get('/movies', getMovies);
+app.get('/api/movies/:id', getMovieDetails);
 app.get('/api/movie/:id', async (req, res) => {
     const { id } = req.params; 
     const movieService = new MovieService(); 
@@ -51,3 +53,5 @@ app.listen(PORT, () => {
     console.log(`[Movie Prime Pro]: Senior Backend operational on port ${PORT}`);
     console.log(`[Env]: Running in ${config.nodeEnv} mode`);
 });
+
+export default app;
