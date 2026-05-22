@@ -24,11 +24,11 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/api/:path*",
       "destination": "server/src/server.ts"
     },
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "client/$1"
     }
   ]
