@@ -17,6 +17,7 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.options('*', cors()); 
 app.use('/api', apiLimiter);
 app.get('/api/movies', getMovies);
 app.get('/api/movies/:id', getMovieDetails);
@@ -40,7 +41,7 @@ app.use(errorHandler as ErrorRequestHandler);
 
 const PORT = config.port;
 
-app.listen(PORT), () => {
+app.listen(PORT, () => {
     console.log(`[Movie Prime Pro]: Senior Backend operational on port ${PORT}`);
     console.log(`[Env]: Running in ${config.nodeEnv} mode`);
-};
+});
