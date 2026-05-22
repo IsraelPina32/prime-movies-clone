@@ -3,29 +3,29 @@
   "builds": [
     {
       "src": "server/src/server.ts",
-      "use": "@vercel/node",
-      "config": {
-        "includeFiles": "server/src/**"
-      }
+      "use": "@vercel/node"
     },
     {
       "src": "client/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    }
-  ],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        { "key": "Access-Control-Allow-Credentials", "value": "true" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
-        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization" }
-      ]
+      "config": {
+        "distDir": "dist"
+      }
     }
   ],
   "rewrites": [
+    {
+      "source": "/api/movies",
+      "destination": "server/src/server.ts"
+    },
+    {
+      "source": "/api/movies/:id",
+      "destination": "server/src/server.ts"
+    },
+    {
+      "source": "/api/movie/:id",
+      "destination": "server/src/server.ts"
+    },
     {
       "source": "/api/:path*",
       "destination": "server/src/server.ts"
