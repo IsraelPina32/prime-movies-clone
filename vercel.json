@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/src/server.ts",
+      "src": "server/dist/server.js",
       "use": "@vercel/node"
     },
     {
@@ -15,20 +15,8 @@
   ],
   "rewrites": [
     {
-      "source": "/api/movies",
-      "destination": "server/src/server.ts"
-    },
-    {
-      "source": "/api/movies/:id",
-      "destination": "server/src/server.ts"
-    },
-    {
-      "source": "/api/movie/:id",
-      "destination": "server/src/server.ts"
-    },
-    {
       "source": "/api/:path*",
-      "destination": "server/src/server.ts"
+      "destination": "server/dist/server.js"
     },
     {
       "source": "/((?!api/).*)",
