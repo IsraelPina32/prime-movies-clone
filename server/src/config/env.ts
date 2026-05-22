@@ -1,4 +1,9 @@
 import dotenv from 'dotenv';
+import path from 'path';
+
+
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
+
 dotenv.config();
 
 interface Config {
@@ -15,7 +20,7 @@ interface Config {
 const nodeEnv = process.env.NODE_ENV || 'development';
 
 export const config: Config = {
-  port: process.env.PORT || 3000,
+  port: process.env.PORT || 3001,
   omdb: {
     apiKey: process.env.OMDB_API_KEY || '',
     baseUrl: process.env.OMDB_BASE_URL || 'https://www.omdbapi.com/',
