@@ -8,11 +8,11 @@
     },
     {
       "source": "/assets/:path*",
-      "destination": "/client/dist/assets/:path*"
+      "destination": "/dist/assets/:path*"
     },
     {
       "source": "/((?!api/).*)",
-      "destination": "/client/dist/index.html"
+      "destination": "/dist/index.html"
     }
   ]
 }
