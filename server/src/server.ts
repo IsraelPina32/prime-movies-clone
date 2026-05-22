@@ -1,4 +1,4 @@
-import express, { ErrorRequestHandler } from 'express';
+import express, { Request, Response,  NextFunction } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import { config } from '@/config/env';
@@ -11,7 +11,7 @@ const app = express();
 
 app.use(helmet());
 const corsOptions = {
-  origin: '*',
+  origin: config.nodeEnv === 'production' ? config.allowedOrigins : '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   preflightContinue: false,
@@ -26,9 +26,13 @@ const apiRouter = express.Router();
 
 apiRouter.get('/movies', getMovies);
 apiRouter.get('/api/movies/:id', getMovieDetails);
-apiRouter.get('/api/movie/:id', async (req, res) => {
-    const { id } = req.params; 
+apiRouter.get('/api/movie/:id', async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    const { id } = req.query; 
     const movieService = new MovieService(); 
+
+    if (typeof id !== 'string') {
+    return res.status(400).json({ error: "O parâmetro 'id' deve ser uma string única." });
+  }
 
     try {
         const movie = await movieService.getMovieDetails(id);
@@ -39,13 +43,12 @@ apiRouter.get('/api/movie/:id', async (req, res) => {
 
         return res.json(movie);
     } catch (error) {
-        return res.status(500).json({ error: "Erro interno no servidor" });
+        next(error);
     }
 });
 
 app.use('/api', apiRouter);
-app.use('/', apiRouter);
-app.use(errorHandler as ErrorRequestHandler);
+app.use(errorHandler);
 
 const PORT = config.port;
 
