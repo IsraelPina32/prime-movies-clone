@@ -25,28 +25,7 @@ app.use(apiLimiter);
 const apiRouter = express.Router();
 
 apiRouter.get('/movies', getMovies);
-apiRouter.get('/api/movies/:id', getMovieDetails);
-apiRouter.get('/api/movie/:id', async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    const { id } = req.query; 
-    const movieService = new MovieService(); 
-
-    if (typeof id !== 'string') {
-    return res.status(400).json({ error: "O parâmetro 'id' deve ser uma string única." });
-  }
-
-    try {
-        const movie = await movieService.getMovieDetails(id);
-        
-        if (!movie) {
-            return res.status(404).json({ message: "Filme não encontrado no OMDB" });
-        }
-
-        return res.json(movie);
-    } catch (error) {
-        next(error);
-    }
-});
-
+apiRouter.get('/movies/:id', getMovieDetails);
 app.use('/api', apiRouter);
 app.use(errorHandler);
 
