@@ -8,6 +8,8 @@ import { getMovieDetails, getMovies } from '@/controllers/movie.controllers';
 
 const app = express();
 
+app.set('trust proxy', 1);
+
 app.use(helmet());
 const corsOptions = {
   origin: config.nodeEnv === 'production' ? config.allowedOrigins : '*',
