@@ -1,11 +1,10 @@
-import express, { Request, Response,  NextFunction } from 'express';
+import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import { config } from '@/config/env';
 import { apiLimiter } from '@/middlewares/rateLimiter';
 import { errorHandler } from '@/middlewares/errorHandler';
 import { getMovieDetails, getMovies } from '@/controllers/movie.controllers';
-import { MovieService } from '@/services/movie.services';
 
 const app = express();
 
@@ -31,9 +30,11 @@ app.use(errorHandler);
 
 const PORT = config.port;
 
-app.listen(PORT, () => {
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
     console.log(`[Movie Prime Pro]: Senior Backend operational on port ${PORT}`);
     console.log(`[Env]: Running in ${config.nodeEnv} mode`);
-});
+  });
+}
 
 export default app;

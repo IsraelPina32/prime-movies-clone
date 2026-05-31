@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "buildCommand": "npm run build",
+  "installCommand": "npm install && npm install --prefix server && npm install --prefix client",
   "cleanUrls": true,
   "rewrites": [
     {
@@ -8,11 +10,11 @@
     },
     {
       "source": "/assets/:path*",
-      "destination": "/dist/assets/:path*"
+      "destination": "/client/dist/assets/:path*"
     },
     {
       "source": "/((?!api/).*)",
-      "destination": "/dist/index.html"
+      "destination": "/client/dist/index.html"
     }
   ]
 }
