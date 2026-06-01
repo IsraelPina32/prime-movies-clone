@@ -10,36 +10,36 @@ const app = express();
 
 app.set('trust proxy', 1);
 
-app.use(helmet());
-
 function isOriginAllowed(origin: string): boolean {
   if (config.allowedOrigins.includes(origin)) return true;
-
-  // Allows Vercel production and preview URLs (e.g. *-username-projects.vercel.app)
   return /^https:\/\/([a-z0-9-]+\.)*vercel\.app$/i.test(origin);
 }
 
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
-    if (config.nodeEnv !== 'production') {
+    if (!origin) {
       callback(null, true);
       return;
     }
 
-    if (!origin || isOriginAllowed(origin)) {
-      callback(null, true);
+    if (config.nodeEnv !== 'production' || isOriginAllowed(origin)) {
+      callback(null, origin);
       return;
     }
 
     callback(null, false);
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  preflightContinue: false,
   optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  }),
+);
 app.use(express.json());
 app.use(apiLimiter);
 
