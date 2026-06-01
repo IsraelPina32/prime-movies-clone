@@ -1,6 +1,6 @@
 import express from 'express';
 import helmet from 'helmet';
-import cors from 'cors';
+import cors, { type CorsOptions } from 'cors';
 import { config } from '@/config/env';
 import { apiLimiter } from '@/middlewares/rateLimiter';
 import { errorHandler } from '@/middlewares/errorHandler';
@@ -11,12 +11,32 @@ const app = express();
 app.set('trust proxy', 1);
 
 app.use(helmet());
-const corsOptions = {
-  origin: config.nodeEnv === 'production' ? config.allowedOrigins : '*',
+
+function isOriginAllowed(origin: string): boolean {
+  if (config.allowedOrigins.includes(origin)) return true;
+
+  // Allows Vercel production and preview URLs (e.g. *-username-projects.vercel.app)
+  return /^https:\/\/([a-z0-9-]+\.)*vercel\.app$/i.test(origin);
+}
+
+const corsOptions: CorsOptions = {
+  origin(origin, callback) {
+    if (config.nodeEnv !== 'production') {
+      callback(null, true);
+      return;
+    }
+
+    if (!origin || isOriginAllowed(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(null, false);
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   preflightContinue: false,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
