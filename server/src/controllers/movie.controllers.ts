@@ -5,13 +5,13 @@ const movieService = new MovieService();
 
 export const getMovies = async (req: Request, res: Response) => {
     try {
-        const { query, page } = req.query;
+        const { query, page, year, type } = req.query;
 
         if(!query || typeof query !== 'string') {
             return res.status(400).json({ error: 'Query parameter "s" is required and must be a string' });
         };
 
-        const result = await movieService.searchMovies(query, Number(page) || 1);
+        const result = await movieService.searchMovies(query, Number(page) || 1, typeof year === 'string' ? year : undefined, typeof type === 'string' ? type : undefined);
         return res.json({
             movies: result.movies,
             totalResults: result.total

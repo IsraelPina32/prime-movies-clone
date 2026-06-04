@@ -11,12 +11,21 @@ export class MovieService {
     private readonly baseUrl = config.omdb.baseUrl;
     private readonly apiKey = config.omdb.apiKey;
 
-    async searchMovies(query: string, page: number = 1): Promise<MovieSearchResponse> {
+    async searchMovies(query: string, page: number = 1, year?: string, type?: string) : Promise<MovieSearchResponse> {
         if (!this.apiKey) {
             throw new Error('OMDB API key is not set in environment variables.');
         };
 
-        const { data: searchData } = await axios.get(`${this.baseUrl}?s=${query}&page=${page}&apikey=${this.apiKey}`);
+        
+        const { data: searchData } = await axios.get(this.baseUrl, {
+            params: {
+                apikey: this.apiKey,
+                s: query,
+                page: page,
+                y: year,
+                type: type
+            }
+        });
 
         if (!searchData.Search || searchData.Response === "False" || !searchData.Search) {
             return { movies: [], total: 0 };

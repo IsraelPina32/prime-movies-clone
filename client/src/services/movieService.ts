@@ -19,7 +19,9 @@ export const movieService = {
       const response = await api.get('/movies', {
         params: {
           query: options.query,
-          page: options.page
+          page: options.page,
+          year: options.year || undefined,
+          type: options.type || undefined
         }
       });
 
