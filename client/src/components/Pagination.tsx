@@ -29,7 +29,6 @@ export const Pagination = ({ currentPage, totalResults, onPageChange }: Paginati
     };
 
     const visiblePages = getVisiblePages();
-
     const baseBtnStyles = "flex items-center justify-center transition-all duration-300 font-medium rounded-lg disabled:opacity-30 disabled:cursor-not-allowed";
     const navBtnStyles = `${baseBtnStyles} px-5 py-2 bg-[#1a242f] text-white hover:bg-blue-900 active:scale-95 text-sm sm:text-base`;
     const pageBtnStyles = `${baseBtnStyles} w-10 h-10 text-sm`;
